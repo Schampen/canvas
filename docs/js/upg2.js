@@ -23,9 +23,10 @@ const Box = function(x, y, width, height) {
     return box; // vi returnerar box objektet
 }
 
-const Circle = function(x,y, radius) {
+const Circle = function(x,y, radius, sY, sX) {
     let circle = {};
-    circle.speed = 2;
+    circle.speedY = sY;
+    circle.speedX = sX;
     circle.y = y;
     circle.x = x;
     circle.radius = radius;
@@ -38,7 +39,11 @@ const Circle = function(x,y, radius) {
     return circle;
 }
 let box = Box(0, 200, 100, 100); // skapa en ny Box och spara den i variabeln box
-let circle = Circle(400,50,50);
+let circle = Circle(400,50,50,7,3);
+let circle2 = Circle(400,50,50,6,5);
+let circle3 = Circle(400,50,50,4,8);
+let circle4 = Circle(400,50,50,10,10);
+let circle5 = Circle(400,50,50,20,9);
 
 // spelets huvudloop som kallas på genom requestAnimationFrame
 // https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
@@ -66,17 +71,25 @@ function step(timestamp) {
 
     // animering av vår box
     // först så uppdaterar vi X värdet på boxen, är det utanför canvas.width - 100 så byter vi håll på dess speed
+
+    circle.y += circle.speedY;
+    circle.x += circle.speedX;
+    if (circle.y + circle.speedY + circle.radius > HEIGHT || circle.y - circle.radius + circle.speedY < 0) {
+        circle.speedY = -circle.speedY;
+    }
+    if (circle.x + circle.radius + circle.speedX > WIDTH || circle.x - circle.radius + circle.speedX < 0) {
+        circle.speedX = -circle.speedX;
+    }
+
+    circle.draw();
+
     box.x += box.speed;
     if (box.x + box.speed > WIDTH - box.width || box.x + box.speed < 0) {
         box.speed = -box.speed;
     }
     box.draw(); // kalla på boxens rit funktion
-
-    circle.y += circle.speed;
-    if (circle.y + circle.speed + circle.radius > HEIGHT || circle.y - circle.radius + circle.speed < 0) {
-        circle.speed = -circle.speed;
-    }
-    circle.draw();
+    
+    
 
     // callback på sig själv genom requestAnimationFrame
     canvasLoop = window.requestAnimationFrame(step);
